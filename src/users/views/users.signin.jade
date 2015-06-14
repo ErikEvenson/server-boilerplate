@@ -1,0 +1,18 @@
+extends ../../app/views/base.jade
+
+block content
+  each message, index in messages
+    div(class="flash")= message
+    
+  form(action='/users/signin', method='post')
+    div
+      label Username:
+      input(type='text', name='username')
+    div
+      label Password:
+      input(type='password', name='password')
+    div
+      input(type='submit', value='Sign in')
+
+  p
+    a(href="/users/signup") Sign up

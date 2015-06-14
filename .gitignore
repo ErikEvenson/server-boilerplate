@@ -1,0 +1,23 @@
+# Ignore bower components
+bower_components/
+
+# Ignore test output directory
+/test/e2e/output/*
+
+# Ignore built instances
+/instances/*
+
+# Ignore secrets
+/secrets/*
+
+# Ignore temp directory
+/temp/*
+
+# Ignore node module directory
+node_modules/
+
+# Ignore npm debug log
+npm-debug.log
+
+# .gitkeep files are used to maintain directories.
+!.gitkeep

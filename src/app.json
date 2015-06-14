@@ -1,0 +1,13 @@
+{
+  "addons": [
+    "mongolab:sandbox"
+  ],
+  "name": "server-boilerplate",
+  "description": "server-boilerplate",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "repository": "https://github.com/ErikEvenson/server-boilerplate",
+  "logo": "http://eee555.herokuapp.com/node.svg",
+  "keywords": ["node", "express", "static"]
+}

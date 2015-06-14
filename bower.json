@@ -1,0 +1,20 @@
+{
+  "name": "server-boilerplate",
+  "version": "0.0.1",
+  "homepage": "https://github.com/ErikEvenson/server-boilerplate",
+  "authors": [
+    "Erik Evenson <erik.e.evenson@gmail.com>"
+  ],
+  "description": "server-boilerplate",
+  "main": "./src/bin/www",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}

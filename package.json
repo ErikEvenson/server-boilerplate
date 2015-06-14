@@ -1,0 +1,66 @@
+{
+  "name": "server-boilerplate",
+  "version": "0.0.1",
+  "description": "server-boilerplate",
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "gulp test"
+  },
+  "dependencies": {
+    "body-parser": "1.12.4",
+    "compression": "1.4.4",
+    "connect-flash": "0.1.1",
+    "debug": "2.2.0",
+    "express": "4.12.4",
+    "express-session": "1.11.2",
+    "jade": "1.10.0",
+    "lodash": "3.9.3",
+    "method-override": "2.3.3",
+    "mongoose": "4.0.5",
+    "morgan": "1.5.3",
+    "passport": "0.2.2",
+    "passport-local": "1.0.0"
+  },
+  "engines": {
+    "node": "0.12.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ErikEvenson/server-boilerplate"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "async": "1.0.0",
+    "aws-sdk": "2.1.32",
+    "chai": "2.3.0",
+    "del": "1.2.0",
+    "gulp": "3.8.11",
+    "gulp-cached": "1.1.0",
+    "gulp-callback": "0.0.3",
+    "gulp-develop-server": "0.4.3",
+    "gulp-gjslint": "0.1.4",
+    "gulp-gzip": "1.1.0",
+    "gulp-jshint": "1.11.0",
+    "gulp-mocha": "2.1.0",
+    "gulp-newer": "0.5.0",
+    "gulp-shell": "0.4.2",
+    "gulp-tar": "1.4.0",
+    "gulp-util": "3.0.4",
+    "heroku-client": "1.11.0",
+    "map-stream": "0.0.5",
+    "mkdirp": "0.5.1",
+    "q": "1.4.1",
+    "request": "2.57.0",
+    "should": "6.0.3",
+    "sinon": "1.15.3",
+    "supertest": "1.0.1",
+    "uuid": "2.0.1",
+    "yargs": "3.9.1",
+    "yeoman-assert": "2.0.0"
+  }
+}
