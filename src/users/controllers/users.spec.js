@@ -6,7 +6,12 @@ var
   request = require('supertest'),
   should = require('should');
 
-var app, db, user, User;
+var
+  app,
+  db,
+  token,
+  user,
+  User;
 
 describe('Users', function() {
   before(function(done) {
@@ -31,6 +36,17 @@ describe('Users', function() {
         if (err) return done(err);
         done();
       });
+
+      request(app)
+        .post('/authenticate')
+        .send({
+          username: 'username',
+          password: 'password'
+        })
+        .end(function(err, res) {
+          token = res.body.token;
+        });
+
     });
   });
 
@@ -40,71 +56,47 @@ describe('Users', function() {
   });
 
   describe('Users API:', function() {
-    describe('GET', function() {
-      it('/api/users/:username', function(done) {
-        request(app).get('/api/users/' + user.username)
+    describe('GET /api/users/:username', function() {
+      it('should provide a authenticated user their record', function(done) {        
+        request(app)
+          .get('/api/users/' + user.username)
           .set('Accept', 'application/json')
+          .set('x-access-token', token)
           .expect(function(res) {
+            expect(res.body).to.have.property('username', 'username');
+            expect(res.body).to.not.have.property('password');
           })
           .expect('Content-Type', /json/)
           .expect(200, done);
       });
+
+      it('should not provide an unauthenticated user their record', function(done) {        
+        request(app)
+          .get('/api/users/' + user.username)
+          .set('Accept', 'application/json')
+          .expect(function(res) {
+            expect(res.body).to.have.property('success', false);
+            expect(res.body).to.not.have.property('username');
+          })
+          .expect('Content-Type', /json/)
+          .expect(403, done);
+      });
+
+      it('should not provide user with bad authentication their record', function(done) {        
+        request(app)
+          .get('/api/users/' + user.username)
+          .set('Accept', 'application/json')
+          .set('x-access-token', 'badtoken')
+          .expect(function(res) {
+            expect(res.body).to.have.property('success', false);
+            expect(res.body).to.not.have.property('username');
+            console.log(res.body);
+          })
+          .expect('Content-Type', /json/)
+          .expect(200, done);
+      });
+
     });
   });
-
-  describe('Users non-API:', function() {
-    describe('Signing in users', function() {
-      describe('GET /users/signin', function() {
-        it('should show the signin form');
-      });
-
-      describe('POST /users/signin', function() {
-        it('should signin test user and redirect', function(done) {
-          request(app)
-            .post('/users/signin')
-            .send({
-              username: 'username',
-              password: 'password'
-            })
-            .expect('Content-Type', /text\/plain/)
-            .expect(function(res) {
-              expect(res.headers.location).to.equal('/');
-            })
-            .expect(302, done);
-        });
-
-        it('should not signin bad user and redirect', function(done) {
-          request(app)
-            .post('/users/signin')
-            .send({
-              username: 'username',
-              password: 'badpassword'
-            })
-            .expect('Content-Type', /text\/plain/)
-            .expect(function(res) {
-              expect(res.headers.location).to.equal('/users/signin');
-            })
-            .expect(302, done);
-        });
-      });
-    });
-
-    describe('Signing out users', function() {
-      describe('GET /users/signout', function() {
-        it('should signout the user');
-      });
-    });
-
-    describe('Signing up users', function() {
-      describe('GET /users/signup', function() {
-        it('should show the signup form');
-      });
-
-      describe('POST /users/signup', function() {
-        it('should signup user and redirect');
-      });
-    });
-  });
-
 });
 

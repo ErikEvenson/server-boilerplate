@@ -36,6 +36,7 @@ These are the technologies used in this project.
 - [gulp-util](https://www.npmjs.com/package/gulp-util) 3.0.4 - Utility functions for gulp plugins
 - [heroku-client](https://www.npmjs.com/package/heroku-client) 1.11.0 - A wrapper for the Heroku v3 API
 - [jade](https://www.npmjs.com/package/jade) 1.10.0 - 'Robust, elegant, feature rich template engine for nodejs.'
+- [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) 5.0.2 - JSON Web Token implementation (symmetric and asymmetric)
 - [lodash](https://www.npmjs.com/package/lodash) 3.9.3 - The modern build of lodash modular utilities
 - [map-stream](https://www.npmjs.com/package/map-stream) 0.0.5 - construct pipes of streams of events
 - [method-override](https://www.npmjs.com/package/method-override) 2.3.3 - Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn't support it.

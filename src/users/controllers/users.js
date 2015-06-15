@@ -1,104 +1,41 @@
 var
-  User = require('mongoose').model('User'),
-  passport = require('passport');
+  jwt = require('jsonwebtoken'),
+  User = require('mongoose').model('User');
 
-var getErrorMessage = function(err) {
-  var message = '';
+exports.authenticate = function(req, res, next) {
+  User.findOneByUsername(req.body.username, function(err, user) {
+    if (err) throw err;
 
-  if (err.code) {
-    switch (err.code) {
-      case 11000:
-      case 11001:
-        message = 'Username already exists';
-        break;
-      default:
-        message = 'Something went wrong';
-    }
-  } else {
-    for (var errName in err.errors) {
-      if (err.errors[errName].message) {
-        message = err.errors[errName].message;
-      }
-    }
-  }
-
-  return message;
-};
-
-exports.requiresLogin = function(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.status(401).send({
-      message: 'User is not logged in'
-    });
-  }
-
-  next();
-};
-
-exports.renderSignin = function(req, res, next) {
-  if (!req.user) {
-    res.render('users.signin.jade', {
-      title: 'Sign-in form',
-      messages: req.flash('error') || req.flash('info')
-    });
-  } else {
-    return res.redirect('/');
-  }
-};
-
-exports.renderSignup = function(req, res, next) {
-  if (!req.user) {
-    res.render('users.signup.jade', {
-      title: 'Sign-up form',
-      messages: req.flash('error')
-    });
-  } else {
-    return res.redirect('/');
-  }
-};
-
-exports.signup = function(req, res, next) {
-  if (!req.user) {
-    var user = new User(req.body);
-    var message = null;
-    user.provider = 'local';
-
-    user.save(function(err) {
-      if (err) {
-        var message = getErrorMessage(err);
-        req.flash('error', message);
-        return res.redirect('/signup');
-      }
-
-      req.login(user, function(err) {
-        if (err) return next(err);
-        return res.redirect('/');
+    if (!user) {
+      res.json({
+        success: false,
+        message: 'Authentication failed.  User not found.'
       });
-    });
-  } else {
-    return res.redirect('/');
-  }
-};
+    } else if (user) {
+      if (!user.authenticate(req.body.password)) {
+        res.json({
+          success: false,
+          message: 'Authentication failed.  Wrong password.'
+        });
+      } else {
+        var token = jwt.sign(user, req.app.get('secrets').tokenSecret, {
+          expiresInMinutes: 1440 // 24 hours
+        });
 
-exports.signout = function(req, res) {
-  req.logout();
-  res.redirect('/');
-};
-
-exports.userByUsername = function(req, res, next, username) {
-  User
-    .findOneByUsername(username, function(err, userFromUsername) {
-      if (err) return next(err);
-
-      if (!userFromUsername) {
-        return next(new Error('Failed to load user from username ' + id));
+        res.json({
+          success: true,
+          message: 'Enjoy your token!',
+          token: token
+        });
       }
-
-      req.userFromUsername = userFromUsername;
-      next();
-    });
+    }
+  });
 };
 
-exports.read = function(req, res) {
-  res.json(req.userFromUsername);
-};
+exports.read = function(req, res, next) {
+  var username = req.params.username;
+
+  User.findOneByUsername(username, function(err, user) {
+    return res.json(user);
+  });
+}

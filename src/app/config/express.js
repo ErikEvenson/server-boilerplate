@@ -4,10 +4,12 @@ var
   environment = require('./environment'),
   express = require('express'),
   flash = require('connect-flash'),
+  jwt = require('jsonwebtoken'),
   methodOverride = require('method-override'),
   morgan = require('morgan'),
   passport = require('passport'),
   path = require('path'),
+  secrets = require('./secrets'),
   session = require('express-session');
 
 /**
@@ -18,6 +20,8 @@ module.exports = function() {
   var app = express();
   var instancePath = path.join(__dirname, '../..');
   var forceSSL = require('./ssl').force(environment.hostname);
+
+  app.set('secrets', secrets);
 
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
@@ -48,10 +52,36 @@ module.exports = function() {
     secret: environment.sessionSecret
   }));
 
+  var apiRoutes = express.Router();
+
+  apiRoutes.use(function(req, res, next) {
+    var token = req.body.token || req.query.token || req.headers['x-access-token']
+
+    if (token) {
+      jwt.verify(token, req.app.get('secrets').tokenSecret, function(err, decoded) {
+        if (err) {
+          return res.json({
+            success: false,
+            message: 'Failed to authenticate token.'
+          });
+        } else {
+          req.decoded = decoded;
+          next();
+        }
+      });
+    } else {
+      return res.status(403).send({
+        success: false,
+        message: 'No token provided.'
+      });
+    }
+  });
+
+  app.use('/api', apiRoutes);
+
   // Set up view engines
   viewPaths = [
-    path.join(instancePath, 'app/views'),
-    path.join(instancePath, 'users/views')
+    path.join(instancePath, 'app/views')
   ];
 
   app.set('views', viewPaths);
