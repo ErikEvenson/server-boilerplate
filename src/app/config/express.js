@@ -51,8 +51,7 @@ module.exports = function() {
   // Set up view engines
   viewPaths = [
     path.join(instancePath, 'app/views'),
-    path.join(instancePath, 'users/views'),
-    path.join(instancePath, 'organizations/views')
+    path.join(instancePath, 'users/views')
   ];
 
   app.set('views', viewPaths);
@@ -68,7 +67,6 @@ module.exports = function() {
   // Set up routes
   require(path.join(instancePath, 'app/routes/app'))(app);
   require(path.join(instancePath, 'users/routes/users'))(app);
-  require(path.join(instancePath, 'organizations/routes/organizations'))(app);
 
   // Serve static assets
   app.use('/app/public', express.static(path.join(instancePath, 'app/public')));

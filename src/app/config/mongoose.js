@@ -11,7 +11,6 @@ module.exports = function() {
   var instancePath = path.join(__dirname, '../..');
 
   require(path.join(instancePath, 'users/models/users'));
-  require(path.join(instancePath, 'organizations/models/organizations'));
 
   // Close the Mongoose connection on Control+C
   process.on('SIGINT', function() {

@@ -25,10 +25,6 @@ var UserSchema = new Schema({
       type: String
     }
   },
-  organization: {
-    ref: 'Organization',
-    type: Schema.Types.ObjectId
-  },
   password: {
     type: String,
     validate: [

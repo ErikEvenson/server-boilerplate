@@ -41,29 +41,10 @@ describe('Users', function() {
 
   describe('Users API:', function() {
     describe('GET', function() {
-      // it('/api/users', function(done) {
-      //   request(app).get('/api/organizations/')
-      //     .set('Accept', 'application/json')
-      //     .expect('Content-Type', /json/)
-      //     .expect(200)
-      //     .end(function(err, res) {
-      //       res.body.should.be.an.Array.and.have.lengthOf(1);
-      //       res.body[0].should.have.property('name', organization.name);
-      //       res.body[0].should.have.property('email', organization.email);
-
-      //       done();
-      //     });
-      // });
-
       it('/api/users/:username', function(done) {
         request(app).get('/api/users/' + user.username)
           .set('Accept', 'application/json')
           .expect(function(res) {
-            console.log('XXX', res.body);
-            // res.body.should.be.an.Object
-            //   .and.have.property('name', organization.name);
-
-            // res.body.should.have.property('email', organization.email);
           })
           .expect('Content-Type', /json/)
           .expect(200, done);
