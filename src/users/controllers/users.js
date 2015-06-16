@@ -38,4 +38,4 @@ exports.read = function(req, res, next) {
   User.findOneByUsername(username, function(err, user) {
     return res.json(user);
   });
-}
+};

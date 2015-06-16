@@ -57,7 +57,7 @@ describe('Users', function() {
 
   describe('Users API:', function() {
     describe('GET /api/users/:username', function() {
-      it('should provide a authenticated user their record', function(done) {        
+      it('should provide a authed user their record', function(done) {
         request(app)
           .get('/api/users/' + user.username)
           .set('Accept', 'application/json')
@@ -70,7 +70,7 @@ describe('Users', function() {
           .expect(200, done);
       });
 
-      it('should not provide an unauthenticated user their record', function(done) {        
+      it('should not provide an unauthed user their record', function(done) {
         request(app)
           .get('/api/users/' + user.username)
           .set('Accept', 'application/json')
@@ -82,7 +82,7 @@ describe('Users', function() {
           .expect(403, done);
       });
 
-      it('should not provide user with bad authentication their record', function(done) {        
+      it('should not provide user with bad auth their record', function(done) {
         request(app)
           .get('/api/users/' + user.username)
           .set('Accept', 'application/json')
