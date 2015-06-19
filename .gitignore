@@ -8,7 +8,7 @@ bower_components/
 /instances/*
 
 # Ignore secrets
-/secrets/*
+**/secrets/*
 
 # Ignore temp directory
 /temp/*
