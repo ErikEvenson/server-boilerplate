@@ -52,38 +52,38 @@ module.exports = function() {
     secret: environment.sessionSecret
   }));
 
-  var apiRoutes = express.Router();
+  // var apiRoutes = express.Router();
 
-  apiRoutes.use(function(req, res, next) {
-    var token = (
-      req.body.token || req.query.token || req.headers['x-access-token']
-    );
+  // apiRoutes.use(function(req, res, next) {
+  //   var token = (
+  //     req.body.token || req.query.token || req.headers['x-access-token']
+  //   );
 
-    if (token) {
-      jwt.verify(
-        token,
-        req.app.get('secrets').tokenSecret,
-        function(err, decoded) {
-          if (err) {
-            return res.json({
-              success: false,
-              message: 'Failed to authenticate token.'
-            });
-          } else {
-            req.decoded = decoded;
-            next();
-          }
-        }
-      );
-    } else {
-      return res.status(403).send({
-        success: false,
-        message: 'No token provided.'
-      });
-    }
-  });
+  //   if (token) {
+  //     jwt.verify(
+  //       token,
+  //       req.app.get('secrets').tokenSecret,
+  //       function(err, decoded) {
+  //         if (err) {
+  //           return res.json({
+  //             success: false,
+  //             message: 'Failed to authenticate token.'
+  //           });
+  //         } else {
+  //           req.decoded = decoded;
+  //           next();
+  //         }
+  //       }
+  //     );
+  //   } else {
+  //     return res.status(403).send({
+  //       success: false,
+  //       message: 'No token provided.'
+  //     });
+  //   }
+  // });
 
-  app.use('/api', apiRoutes);
+  // app.use('/api', apiRoutes);
 
   // Set up view engines
   viewPaths = [
@@ -101,11 +101,16 @@ module.exports = function() {
   app.use(passport.session());
 
   // Set up routes
-  require(path.join(instancePath, 'app/routes/app'))(app);
+  // require(path.join(instancePath, 'app/routes/app'))(app);
   require(path.join(instancePath, 'users/routes/users'))(app);
 
   // Serve static assets
-  app.use('/app/public', express.static(path.join(instancePath, 'app/public')));
+  app.use('/public', express.static(path.join(instancePath, 'public')));
+
+  // Redirect anything else to static
+  app.get('*', function(req, res) {
+    res.redirect('/public');
+  });
 
   return app;
 };

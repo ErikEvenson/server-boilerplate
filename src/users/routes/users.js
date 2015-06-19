@@ -8,4 +8,7 @@ module.exports = function(app) {
 
   app.route('/api/users/:username')
     .get(usersController.read);
+
+  app.route('/api/users')
+    .get(usersController.list);
 };

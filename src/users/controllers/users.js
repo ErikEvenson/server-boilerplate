@@ -32,6 +32,16 @@ exports.authenticate = function(req, res, next) {
   });
 };
 
+exports.list = function(req, res, next) {
+  User.find(function(err, users) {
+    if (!err) {
+      return res.json(users);
+    } else {
+      return console.log(err);
+    }
+  });
+};
+
 exports.read = function(req, res, next) {
   var username = req.params.username;
 

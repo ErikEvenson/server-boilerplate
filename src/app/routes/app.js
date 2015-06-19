@@ -3,6 +3,4 @@
  */
 
 module.exports = function(app) {
-  var index = require('../controllers/app');
-  app.get('/', index.render);
 };
