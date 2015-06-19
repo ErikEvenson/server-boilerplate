@@ -60,6 +60,10 @@ describe('Users', function() {
       it('should provide an array of users');
     });
 
+    describe('POST /api/users', function() {
+      it('should create a user');
+    });
+
     describe('GET /api/users/:username', function() {
       it('should provide a authed user their record', function(done) {
         request(app)

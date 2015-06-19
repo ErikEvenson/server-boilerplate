@@ -105,12 +105,12 @@ module.exports = function() {
   require(path.join(instancePath, 'users/routes/users'))(app);
 
   // Serve static assets
-  app.use('/public', express.static(path.join(instancePath, 'public')));
+  app.use('/', express.static(path.join(instancePath, 'public')));
 
-  // Redirect anything else to static
-  app.get('*', function(req, res) {
-    res.redirect('/public');
-  });
+  // // Redirect anything else to static
+  // app.get('*', function(req, res) {
+  //   res.redirect('/public');
+  // });
 
   return app;
 };

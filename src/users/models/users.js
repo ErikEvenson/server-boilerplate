@@ -55,9 +55,9 @@ var UserSchema = new Schema({
  * @param {Function} cb - A callback.
  * @this UserSchema
  */
-UserSchema.statics.findOneByUsername = function(username, cb) {
-  this.findOne({username: new RegExp(username, 'i')}, cb);
-};
+// UserSchema.statics.findOneByUsername = function(username, cb) {
+//   this.findOne({username: new RegExp(username, 'i')}, cb);
+// };
 
 UserSchema.pre('save', function(next) {
   if (this.password) {

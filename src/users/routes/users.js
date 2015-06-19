@@ -7,8 +7,9 @@ module.exports = function(app) {
     .post(usersController.authenticate);
 
   app.route('/api/users/:username')
-    .get(usersController.read);
+    .get(usersController.show);
 
   app.route('/api/users')
-    .get(usersController.list);
+    .get(usersController.index)
+    .post(usersController.create);
 };

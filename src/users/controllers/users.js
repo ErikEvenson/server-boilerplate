@@ -2,6 +2,10 @@ var
   jwt = require('jsonwebtoken'),
   User = require('mongoose').model('User');
 
+function handleError(res, err) {
+  return res.send(500, err);
+}
+
 exports.authenticate = function(req, res, next) {
   User.findOneByUsername(req.body.username, function(err, user) {
     if (err) throw err;
@@ -32,20 +36,29 @@ exports.authenticate = function(req, res, next) {
   });
 };
 
-exports.list = function(req, res, next) {
-  User.find(function(err, users) {
-    if (!err) {
-      return res.json(users);
-    } else {
-      return console.log(err);
-    }
+exports.create = function(req, res) {
+  User.create(req.body, function(err, user) {
+    if (err) { return handleError(res, err); }
+    return res.status(201).json(user);
   });
 };
 
-exports.read = function(req, res, next) {
-  var username = req.params.username;
+exports.index = function(req, res) {
+  User.find()
+    .sort('-username')
+    .select('-password -salt')
+    .exec(function(err, users) {
+      if (err) { return handleError(res, err); }
+      return res.status(200).json(users);
+    });
+};
 
-  User.findOneByUsername(username, function(err, user) {
-    return res.json(user);
-  });
+exports.show = function(req, res) {
+  User.findOne({username: new RegExp(req.params.username, 'i')})
+    .select('-password -salt')
+    .exec(function(err, user) {
+      if (err) { return handleError(res, err); }
+      if (!user) { return res.send(404); }
+      return res.json(user);
+    });
 };
