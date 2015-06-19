@@ -7,7 +7,8 @@ module.exports = function(app) {
     .post(usersController.authenticate);
 
   app.route('/api/users/:username')
-    .get(usersController.show);
+    .get(usersController.show)
+    .post(usersController.update);
 
   app.route('/api/users')
     .get(usersController.index)

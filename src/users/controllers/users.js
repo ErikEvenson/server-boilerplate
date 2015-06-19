@@ -1,4 +1,5 @@
 var
+  _ = require('lodash'),
   jwt = require('jsonwebtoken'),
   User = require('mongoose').model('User');
 
@@ -60,5 +61,22 @@ exports.show = function(req, res) {
       if (err) { return handleError(res, err); }
       if (!user) { return res.send(404); }
       return res.json(user);
+    });
+};
+
+exports.update = function(req, res) {
+  if(req.body._id) { delete req.body._id; }
+
+  User.findOne({username: new RegExp(req.params.username, 'i')})
+    .select('-password -salt')
+    .exec(function(err, user) {
+      if (err) { return handleError(res, err); }
+      if(!user) { return res.send(404); }
+      var updated = _.merge(user, req.body);
+
+      updated.save(function (err) {
+        if (err) { return handleError(res, err); }
+        return res.json(200, user);
+      });      
     });
 };
