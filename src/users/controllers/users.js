@@ -44,6 +44,19 @@ exports.create = function(req, res) {
   });
 };
 
+exports.destroy = function(req, res) {
+  User.findOne({username: new RegExp(req.params.username, 'i')})
+    .exec(function(err, user) {
+      if (err) { return handleError(res, err); }
+      if (!user) { return res.send(404); }
+
+      user.remove(function(err) {
+        if (err) { return handleError(res, err); }
+        return res.send(204);
+      });
+    });
+};
+
 exports.index = function(req, res) {
   User.find()
     .sort('-username')
@@ -65,18 +78,18 @@ exports.show = function(req, res) {
 };
 
 exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
+  if (req.body._id) { delete req.body._id; }
 
   User.findOne({username: new RegExp(req.params.username, 'i')})
     .select('-password -salt')
     .exec(function(err, user) {
       if (err) { return handleError(res, err); }
-      if(!user) { return res.sendStatus(404); }
+      if (!user) { return res.sendStatus(404); }
       var updated = _.merge(user, req.body);
 
-      updated.save(function (err) {
+      updated.save(function(err) {
         if (err) { return handleError(res, err); }
         return res.status(200).json(user);
-      });      
+      });
     });
 };
