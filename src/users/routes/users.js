@@ -1,18 +1,21 @@
 var
+  express = require('express'),
+  mongoose = require('mongoose'),
+  restify = require('express-restify-mongoose'),
   usersController = require('../controllers/users');
+
+var router = express.Router();
 
 module.exports = function(app) {
   // API routes
   app.route('/authenticate')
     .post(usersController.authenticate);
 
-  app.route('/api/users/:username')
-    .delete(usersController.destroy)
-    .get(usersController.show)
-    .patch(usersController.update)
-    .put(usersController.update);
+  restify.serve(router, mongoose.model('User'), {
+    idProperty: 'username',
+    lowercase: true,
+    strict: true
+  });
 
-  app.route('/api/users')
-    .get(usersController.index)
-    .post(usersController.create);
+  app.use(router);
 };
