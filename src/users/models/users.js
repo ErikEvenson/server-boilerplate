@@ -97,24 +97,24 @@ UserSchema.methods.authenticate = function(password) {
  * @param {Function} cb
  * @this UserSchema
  */
-UserSchema.statics.findUniqueUsername = function(username, suffix, cb) {
-  var _this = this;
-  var possibleUsername = username + (suffix || '');
+// UserSchema.statics.findUniqueUsername = function(username, suffix, cb) {
+//   var _this = this;
+//   var possibleUsername = username + (suffix || '');
 
-  _this.findOne({
-    username: possibleUsername
-  }, function(err, user) {
-    if (!err) {
-      if (!user) {
-        cb(possibleUsername);
-      } else {
-        return _this.findUniqueUsername(username, (suffix || 0) + 1, cb);
-      }
-    } else {
-      cb(null);
-    }
-  });
-};
+//   _this.findOne({
+//     username: possibleUsername
+//   }, function(err, user) {
+//     if (!err) {
+//       if (!user) {
+//         cb(possibleUsername);
+//       } else {
+//         return _this.findUniqueUsername(username, (suffix || 0) + 1, cb);
+//       }
+//     } else {
+//       cb(null);
+//     }
+//   });
+// };
 
 UserSchema.set('toJSON', {
   getters: true,
