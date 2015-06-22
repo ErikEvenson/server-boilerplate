@@ -55,15 +55,6 @@ var UserSchema = new Schema({
   }
 });
 
-/**
- * @param {String} username
- * @param {Function} cb - A callback.
- * @this UserSchema
- */
-// UserSchema.statics.findOneByUsername = function(username, cb) {
-//   this.findOne({username: new RegExp(username, 'i')}, cb);
-// };
-
 UserSchema.pre('save', function(next) {
   if (this.password) {
     this.salt = new Buffer(
@@ -77,53 +68,17 @@ UserSchema.pre('save', function(next) {
   next();
 });
 
-/**
- * @param {String} password -- The password to be hashed.
- * @return {String}
- * @this UserSchema
- */
 UserSchema.methods.hashPassword = function(password) {
   return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
 };
 
-/**
- * @param {String} password -- The password to be hashed.
- * @return {Boolean}
- * @this UserSchema
- */
 UserSchema.methods.authenticate = function(password) {
   return this.password === this.hashPassword(password);
 };
-
-/**
- * @param {String} username
- * @param {String} suffix
- * @param {Function} cb
- * @this UserSchema
- */
-// UserSchema.statics.findUniqueUsername = function(username, suffix, cb) {
-//   var _this = this;
-//   var possibleUsername = username + (suffix || '');
-
-//   _this.findOne({
-//     username: possibleUsername
-//   }, function(err, user) {
-//     if (!err) {
-//       if (!user) {
-//         cb(possibleUsername);
-//       } else {
-//         return _this.findUniqueUsername(username, (suffix || 0) + 1, cb);
-//       }
-//     } else {
-//       cb(null);
-//     }
-//   });
-// };
 
 UserSchema.set('toJSON', {
   getters: true,
   virtuals: true
 });
 
-/** @param {Object} module.exports - Export model. */
 module.exports = mongoose.model('User', UserSchema);
