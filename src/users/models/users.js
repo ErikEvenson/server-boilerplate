@@ -15,13 +15,17 @@ var UserSchema = new Schema({
     ],
     type: String
   },
+  isActive: {
+    default: false,
+    type: Boolean
+  },
   name: {
     first: {
-      required: true,
+      // required: true,
       type: String
     },
     last: {
-      required: true,
+      // required: true,
       type: String
     }
   },

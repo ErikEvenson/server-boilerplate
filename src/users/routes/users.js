@@ -9,8 +9,6 @@ var apiRoutes = express.Router();
 
 module.exports = function(app) {
   authRoutes.use(function(req, res, next) {
-    console.log("XXXX");
-
     var token = (
       req.body.token || req.query.token || req.headers['x-access-token']
     );
@@ -39,15 +37,28 @@ module.exports = function(app) {
     }
   });
 
-  app.use('/api', authRoutes);
+  // app.use('/api', authRoutes);
 
   app.route('/authenticate')
     .post(usersController.authenticate);
 
   // API routes
   restify.serve(apiRoutes, mongoose.model('User'), {
+    access: function(req) {
+      return 'public';
+    },
     idProperty: 'username',
     lowercase: true,
+    prereq: function(req) {
+      console.log("PREREQ: ", req.body);
+      if (!req.body.isActive && req.method === 'POST') {
+        // Allow registrations to POST
+        return true;
+      }
+      return false;
+    },
+    private: '_id,__v,created,email,isActive,name.first,name.last,password,provider,salt',
+    protected: '_id,__v,created,email,isActive,name.first,name.last,password,provider,salt',
     strict: true
   });
 
