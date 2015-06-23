@@ -1,4 +1,5 @@
 var
+  authController = require('../controllers'),
   express = require('express'),
   mongoose = require('mongoose'),
   restify = require('express-restify-mongoose'),
@@ -8,7 +9,9 @@ var authRoutes = express.Router();
 var apiRoutes = express.Router();
 
 module.exports = function(app) {
-  
+  // Authenticate  
+  app.route('/authenticate')
+    .post(authController.authenticate);
 
   // API routes
   restify.serve(apiRoutes, mongoose.model('User'), {
@@ -25,30 +28,26 @@ module.exports = function(app) {
     middleware: [
       // Prevent listing users
       function(req, res, next) {
-        if (req.method === 'GET' && req.path === '/api/v1/auth/registrations') {
-          return res.status(403).send();
+        if (req.method === 'GET') {
+          if (req.path === '/api/v1/auth/registrations') {
+            return res.status(403).send();
+          } else {
+            var registrationToken = req.params.id;
+
+            mongoose.model('User')
+              .findOne({registrationToken: registrationToken}, function(err, user) {
+                user.isActive = true;
+                user.save().then(function(err) {
+                  return next();
+                });
+              });
+          }
+        } else {
+          return res.status(403).send();  
         }
-        
-        return next();
       }
     ],
     name: 'auth/registrations',
-    postProcess: function(req, res, next) {
-      if (req.method === 'GET') {
-        var registrationToken = req.params.id;
-
-        mongoose.model('User')
-          .findOne({registrationToken: registrationToken}, function(err, user) {
-            user.isActive = true;
-            user.registrationToken = null;
-            user.save().then(function() {
-              return next();              
-            })
-          });
-      } else {
-        return next();
-      }
-    },
     prereq: function(req) {
       // Prevent POST, PUT, DELETE
       return false;

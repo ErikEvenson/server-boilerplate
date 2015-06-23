@@ -23,23 +23,28 @@ describe('auth', function() {
 
     apiRoot = environment.apiPrefix + environment.apiVersion;
 
-    var testUser = {
-      email: 'test@example.com',
-      isActive: false,
-      name: {
-        first: 'First',
-        last: 'Last'
+    var users = [
+      {
+        email: 'activeUser@example.com',
+        isActive: true,
+        name: {first: 'Active', last: 'User'},
+        password: 'activePassword',
+        registrationToken: null,
+        username: 'activeUser'
       },
-      password: 'password',
-      registrationToken: 'token',
-      username: 'username'
-    };
+      {
+        email: 'inactiveUser@example.com',
+        isActive: false,
+        name: {first: 'Inactive', last: 'User'},
+        password: 'inactivePassword',
+        registrationToken: 'token',
+        username: 'inactiveUser'
+      }
+    ];
 
     User.remove()
       .then(function() {
-        user = new User(testUser);
-
-        user.save(function(err) {
+        User.create(users, function(err) {
           if (err) return done(err);
           done();
         });
@@ -51,7 +56,41 @@ describe('auth', function() {
     db.connection.close(done);
   });
 
-  describe('Auth API:', function() {
+  describe('authenticate', function() {
+    it('should not authorize bad users', function(done) {
+      request(app)
+        .post('/authenticate')
+        .set('Accept', 'application/json')
+        .send({username: 'badUser', password: 'badPassword'})
+        .expect(401, done);
+    });
+
+    it('should not authorize inactive users', function(done) {
+      request(app)
+        .post('/authenticate')
+        .set('Accept', 'application/json')
+        .send({username: 'inactiveUser', password: 'inactivePassword'})
+        .expect(401)
+        .end(function(err, res) {
+          expect(res.body).to.not.have.property('token');
+          done();
+        });
+    });    
+
+    it('should authorize active users and provide token', function(done) {
+      request(app)
+        .post('/authenticate')
+        .set('Accept', 'application/json')
+        .send({username: 'activeUser', password: 'activePassword'})
+        .expect(200)
+        .end(function(err, res) {
+          expect(res.body).to.have.property('token');
+          done();
+        });
+    });    
+  });
+
+  describe('auth API:', function() {
     describe('GET /auth/registrations', function() {
       it('should not provide public user a list of registrations', function(done) {
         request(app)
@@ -64,15 +103,14 @@ describe('auth', function() {
     describe('GET /auth/registrations/:registrationToken', function() {
       it('should provide an existing registration and enable user', function(done) {
         request(app)
-          .get(apiRoot + '/auth/registrations/' + user.registrationToken)
+          .get(apiRoot + '/auth/registrations/' + 'token')
           .set('Accept', 'application/json')
           .expect(200)
           .end(function(err, res) {
-            expect(res.body).to.deep.equal({registrationToken: user.registrationToken});
+            expect(res.body).to.deep.equal({registrationToken: 'token'});
 
-            User.findOne({username: 'username'}, function(err, registeredUser) {
+            User.findOne({username: 'inactiveUser'}, function(err, registeredUser) {
               expect(registeredUser.isActive).to.equal(true);
-              expect(registeredUser.registrationToken).to.equal(null);
               done();              
             });
           });

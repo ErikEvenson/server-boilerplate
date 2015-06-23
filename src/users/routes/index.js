@@ -77,14 +77,14 @@ module.exports = function(app) {
             console.log("UUID: ", user.registrationToken);
             done();            
           });
-        })
+        });
     },
     prereq: function(req) {
       // Allow registrations to POST
       if (
-        _.has(req.body, 'isActive')
-        && !req.body.isActive 
-        && req.method === 'POST'
+        _.has(req.body, 'isActive') &&
+        !req.body.isActive &&
+        req.method === 'POST'
       ) {
         return true;
       }
