@@ -97,5 +97,14 @@ describe('users', function() {
           .expect(201, done);
       });
     });
-});
 
+    describe('PUT /users', function() {
+      it('should allow users to PUT their own info');
+
+      it('should not allow users to PUT others info');
+    });
+
+    describe('DELETE /users', function() {
+      it('should not allow users to DELETE users');
+    });
+});

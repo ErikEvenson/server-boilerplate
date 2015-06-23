@@ -42,8 +42,6 @@ module.exports = function(app) {
             user.isActive = true;
             user.registrationToken = null;
             user.save().then(function() {
-              console.log("MAIL: ", user.email);
-              console.log("USER: ", user);
               return next();              
             })
           });
