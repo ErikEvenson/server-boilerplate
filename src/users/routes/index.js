@@ -1,4 +1,5 @@
 var
+  _ = require('lodash'),
   express = require('express'),
   mongoose = require('mongoose'),
   restify = require('express-restify-mongoose'),
@@ -79,8 +80,12 @@ module.exports = function(app) {
         })
     },
     prereq: function(req) {
-      if (!req.body.isActive && req.method === 'POST') {
-        // Allow registrations to POST
+      // Allow registrations to POST
+      if (
+        _.has(req.body, 'isActive')
+        && !req.body.isActive 
+        && req.method === 'POST'
+      ) {
         return true;
       }
 

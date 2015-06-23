@@ -1,6 +1,6 @@
 var
-  all,
-  _ = require('lodash');
+  _ = require('lodash'),
+  path = require('path');
 
 function requiredProcessEnv(name) {
   if (!process.env[name]) {
@@ -9,10 +9,12 @@ function requiredProcessEnv(name) {
   return process.env[name];
 }
 
-// All configurations with extend this object.
-all = {
+// All configurations will extend this object.
+var all = {
+  apiPrefix: '/api',
+  apiVersion: '/v1',
   env: process.env.NODE_ENV,
-  temp: 'all'
+  instancePath: path.join(__dirname, '../../..')
 };
 
 /** @param {Constructor} module.exports - Export combined config. */

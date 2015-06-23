@@ -18,9 +18,10 @@ var
 
 module.exports = function() {
   var app = express();
-  var instancePath = path.join(__dirname, '../..');
+  var instancePath = environment.instancePath;
   var forceSSL = require('./ssl').force(environment.hostname);
 
+  app.set('environment', environment);
   app.set('secrets', secrets);
 
   if (process.env.NODE_ENV === 'development') {
