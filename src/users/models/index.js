@@ -48,6 +48,7 @@ var UserSchema = new Schema({
   providerData: {},
   providerId: String,
   registrationToken: {
+    sparse: true,
     type: String,
     unique: true
   },

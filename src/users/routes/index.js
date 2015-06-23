@@ -48,6 +48,11 @@ module.exports = function(app) {
     access: function(req) {
       return 'public';
     },
+    contextFilter: function(model, req, cb) {
+      cb(model.find({}, {
+        username: true
+      }));
+    },
     idProperty: 'username',
     lowercase: true,
     middleware: [
@@ -82,7 +87,7 @@ module.exports = function(app) {
       // Prevent POST, PUT, DELETE
       return false;
     },
-    private: '_id,__v,created,email,isActive,name.first,name.last,password,provider,registrationToken,salt',
+    // private: '_id,__v,created,email,isActive,name.first,name.last,password,provider,registrationToken,salt',
     protected: '_id,__v,created,email,isActive,name.first,name.last,password,provider,registrationToken,salt',
     strict: true
   });

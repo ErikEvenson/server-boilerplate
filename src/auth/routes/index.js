@@ -25,7 +25,6 @@ module.exports = function(app) {
     middleware: [
       // Prevent listing users
       function(req, res, next) {
-        console.log(req.method, req.path);
         if (req.method === 'GET' && req.path === '/api/v1/auth/registrations') {
           return res.status(403).send();
         }
@@ -34,6 +33,24 @@ module.exports = function(app) {
       }
     ],
     name: 'auth/registrations',
+    postProcess: function(req, res, next) {
+      if (req.method === 'GET') {
+        var registrationToken = req.params.id;
+
+        mongoose.model('User')
+          .findOne({registrationToken: registrationToken}, function(err, user) {
+            user.isActive = true;
+            user.registrationToken = null;
+            user.save().then(function() {
+              console.log("MAIL: ", user.email);
+              console.log("USER: ", user);
+              return next();              
+            })
+          });
+      } else {
+        return next();
+      }
+    },
     prereq: function(req) {
       // Prevent POST, PUT, DELETE
       return false;
