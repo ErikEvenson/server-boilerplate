@@ -2,7 +2,8 @@ var
   express = require('express'),
   mongoose = require('mongoose'),
   restify = require('express-restify-mongoose'),
-  usersController = require('../controllers/users');
+  // usersController = require('../controllers/users');
+  uuid = require('uuid');
 
 var authRoutes = express.Router();
 var apiRoutes = express.Router();
@@ -39,8 +40,8 @@ module.exports = function(app) {
 
   // app.use('/api', authRoutes);
 
-  app.route('/authenticate')
-    .post(usersController.authenticate);
+  // app.route('/authenticate')
+  //   .post(usersController.authenticate);
 
   // API routes
   restify.serve(apiRoutes, mongoose.model('User'), {
@@ -60,6 +61,18 @@ module.exports = function(app) {
         return next();
       }
     ],
+    postCreate: function(res, result, done) {
+      // Add registration token if user created via API
+      mongoose.model('User')
+        .findOneByUsername(result.username, function(err, user) {
+          user.registrationToken = uuid.v4();
+
+          user.save(function(err) {
+            console.log("UUID: ", user.registrationToken);
+            done();            
+          });
+        })
+    },
     prereq: function(req) {
       if (!req.body.isActive && req.method === 'POST') {
         // Allow registrations to POST
@@ -69,8 +82,8 @@ module.exports = function(app) {
       // Prevent POST, PUT, DELETE
       return false;
     },
-    private: '_id,__v,created,email,isActive,name.first,name.last,password,provider,salt',
-    protected: '_id,__v,created,email,isActive,name.first,name.last,password,provider,salt',
+    private: '_id,__v,created,email,isActive,name.first,name.last,password,provider,registrationToken,salt',
+    protected: '_id,__v,created,email,isActive,name.first,name.last,password,provider,registrationToken,salt',
     strict: true
   });
 

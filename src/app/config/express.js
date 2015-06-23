@@ -69,7 +69,8 @@ module.exports = function() {
 
   // Set up routes
   // require(path.join(instancePath, 'app/routes/app'))(app);
-  require(path.join(instancePath, 'users/routes/users'))(app);
+  require(path.join(instancePath, 'auth/routes'))(app);
+  require(path.join(instancePath, 'users/routes'))(app);
 
   // Serve static assets
   app.use('/', express.static(path.join(instancePath, 'public')));

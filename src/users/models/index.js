@@ -47,6 +47,10 @@ var UserSchema = new Schema({
   },
   providerData: {},
   providerId: String,
+  registrationToken: {
+    type: String,
+    unique: true
+  },
   username: {
     required: 'Username is required',
     trim: true,
@@ -67,6 +71,10 @@ UserSchema.pre('save', function(next) {
 
   next();
 });
+
+UserSchema.statics.findOneByUsername = function(username, cb) {
+  this.findOne({username: new RegExp(username, 'i')}, cb);
+};
 
 UserSchema.methods.hashPassword = function(password) {
   return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
