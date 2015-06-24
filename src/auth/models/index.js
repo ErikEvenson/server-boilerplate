@@ -1,21 +1,33 @@
-// var
-//   mongoose = require('mongoose'),
-//   Schema = mongoose.Schema;
+var
+  mongoose = require('mongoose'),
+  Schema = mongoose.Schema,
+  uuid = require('uuid');
 
-// var TokenSchema = new Schema({
-//   created: {
-//     default: Date.now,
-//     type: Date
-//   },
-//   owner: {
-//     ref: 'User',
-//     type: mongoose.Schema.Types.ObjectId
-//   },
-//   token: {
-//     sparse: true,
-//     type: String,
-//     unique: true
-//   }
-// });
+var RegistrationSchema = new Schema({
+  created: {
+    default: Date.now,
+    type: Date
+  },
+  token: {
+    sparse: true,
+    type: String,
+    unique: true
+  },
+  username: {
+    trim: true,
+    type: String,
+  }
+});
 
-// module.exports = mongoose.model('Token', TokenSchema);
+RegistrationSchema.pre('save', function(next) {
+  // Email in here?
+  if (!this.token) this.token = uuid.v4();
+  next();
+});
+
+RegistrationSchema.set('toJSON', {
+  getters: true,
+  virtuals: true
+});
+
+module.exports = mongoose.model('Registration', RegistrationSchema);

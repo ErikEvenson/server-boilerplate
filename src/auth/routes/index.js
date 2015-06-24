@@ -14,16 +14,11 @@ module.exports = function(app) {
     .post(authController.authenticate);
 
   // API routes
-  restify.serve(apiRoutes, mongoose.model('User'), {
+  restify.serve(apiRoutes, mongoose.model('Registration'), {
     access: function(req) {
       return 'public';
     },
-    contextFilter: function(model, req, cb) {
-      cb(model.find({}, {
-        registrationToken: true
-      }));
-    },
-    idProperty: 'registrationToken',
+    idProperty: 'token',
     lowercase: true,
     middleware: [
       // Prevent listing users
@@ -32,15 +27,13 @@ module.exports = function(app) {
           if (req.path === '/api/v1/auth/registrations') {
             return res.status(403).send();
           } else {
-            var registrationToken = req.params.id;
-
-            mongoose.model('User')
-              .findOne({registrationToken: registrationToken}, function(err, user) {
-                user.isActive = true;
-                user.save().then(function(err) {
-                  return next();
-                });
-              });
+            return next();
+          }
+        } else if (req.method === 'POST') {
+          if (req.path === '/api/v1/auth/registrations') {
+            return next();
+          } else {
+            return next();
           }
         } else {
           return res.status(403).send();  
@@ -49,11 +42,10 @@ module.exports = function(app) {
     ],
     name: 'auth/registrations',
     prereq: function(req) {
-      // Prevent POST, PUT, DELETE
-      return false;
+      return true;
     },
-    private: '_id',
-    protected: '_id',
+    private: '_id,created,token,__v',
+    protected: '_id,created,token,__v',
     strict: true
   });
 

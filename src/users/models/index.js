@@ -40,11 +40,6 @@ var UserSchema = new Schema({
   salt: {
     type: String
   },
-  registrationToken: {
-    sparse: true,
-    type: String,
-    unique: true
-  },
   username: {
     required: 'Username is required',
     trim: true,

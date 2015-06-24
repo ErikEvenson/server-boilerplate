@@ -2,9 +2,8 @@ var
   _ = require('lodash'),
   express = require('express'),
   mongoose = require('mongoose'),
-  restify = require('express-restify-mongoose'),
+  restify = require('express-restify-mongoose');
   // usersController = require('../controllers/users');
-  uuid = require('uuid');
 
 var authRoutes = express.Router();
 var apiRoutes = express.Router();
@@ -67,18 +66,6 @@ module.exports = function(app) {
         return next();
       }
     ],
-    postCreate: function(res, result, done) {
-      // Add registration token if user created via API
-      mongoose.model('User')
-        .findOneByUsername(result.username, function(err, user) {
-          user.registrationToken = uuid.v4();
-
-          user.save(function(err) {
-            console.log("UUID: ", user.registrationToken);
-            done();            
-          });
-        });
-    },
     prereq: function(req) {
       // Allow registrations to POST
       if (
@@ -92,8 +79,8 @@ module.exports = function(app) {
       // Prevent POST, PUT, DELETE
       return false;
     },
-    // private: '_id,__v,created,email,isActive,name.first,name.last,password,provider,registrationToken,salt',
-    protected: '_id,__v,created,email,isActive,name.first,name.last,password,provider,registrationToken,salt',
+    // private: '_id,__v,created,email,isActive,name.first,name.last,password,salt',
+    protected: '_id,__v,created,email,isActive,name.first,name.last,password,salt',
     strict: true
   });
 

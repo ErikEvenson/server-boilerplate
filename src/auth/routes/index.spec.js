@@ -1,4 +1,5 @@
 var
+  async = require('async'),
   expect = require('chai').expect,
   express = require('../../app/config/express.js'),
   mongoose = require('../../app/config/mongoose.js'),
@@ -10,6 +11,7 @@ var
   app,
   db,
   environment,
+  Token,
   User,
   user;
 
@@ -18,6 +20,7 @@ describe('auth', function() {
     db = mongoose();
     app = express();
     environment = app.get('environment');
+    Registration = db.model('Registration');
     User = db.model('User');
 
     apiRoot = environment.apiPrefix + environment.apiVersion;
@@ -28,7 +31,6 @@ describe('auth', function() {
         isActive: true,
         name: {first: 'Active', last: 'User'},
         password: 'activePassword',
-        registrationToken: null,
         username: 'activeUser'
       },
       {
@@ -36,23 +38,48 @@ describe('auth', function() {
         isActive: false,
         name: {first: 'Inactive', last: 'User'},
         password: 'inactivePassword',
-        registrationToken: 'token',
         username: 'inactiveUser'
       }
     ];
 
-    User.remove()
-      .then(function() {
-        User.create(users, function(err) {
-          if (err) return done(err);
-          done();
-        });
-      });
+    var registrations = [
+      {token: 'token', username: 'inactiveUser'}
+    ]
+
+    async.series(
+      [
+        function(cb) {
+          User.remove()
+            .then(function(err) {
+              User.create(users, cb);
+            });
+        },
+        function(cb) {
+          Registration.remove().then(function(err) {
+            Registration.create(registrations, cb);
+          });
+        },
+      ],
+      function(err, results) {
+        done(err);
+      }
+    );
   });
 
   after(function(done) {
-    User.remove().exec();
-    db.connection.close(done);
+    async.series(
+      [
+        function(cb) {
+          User.remove().then(cb);
+        },
+        function(cb) {
+          Registration.remove().then(cb);
+        },
+      ],
+      function(err, results) {
+        db.connection.close(done);
+      }
+    );
   });
 
   describe('authenticate', function() {
@@ -99,58 +126,32 @@ describe('auth', function() {
       });
     });
 
-    describe('GET /auth/registrations/:registrationToken', function() {
-      it('should provide an existing registration and enable user', function(done) {
+    describe('GET /auth/registrations/:token', function() {
+      it('should provide an existing registration', function(done) {
         request(app)
           .get(apiRoot + '/auth/registrations/' + 'token')
           .set('Accept', 'application/json')
-          .expect(200)
-          .end(function(err, res) {
-            expect(res.body).to.deep.equal({registrationToken: 'token'});
-
-            User.findOne({username: 'inactiveUser'}, function(err, registeredUser) {
-              expect(registeredUser.isActive).to.equal(true);
-              done();              
-            });
-          });
-
+          .expect(200, done);
       });
+    });
+
+    describe('POST /auth/registrations', function() {
+      it('should allow public to POST to get new token via registration', function(done) {
+        request(app)
+          .post(apiRoot + '/auth/registrations')
+          .set('Accept', 'application/json')
+          .send({username: 'register'})
+          .expect(function(res) {
+            expect(res.body).to.deep.equal({username: 'register'});
+          })
+          .expect(201, done);
+      });      
     });
   });
 
-    // describe('POST /users', function() {
-    //   it('should not allow public to POST new user', function(done) {
-    //     request(app)
-    //       .post(apiRoot + '/users')
-    //       .set('Accept', 'application/json')
-    //       .send({username: 'newusers'})
-    //       .set('Accept', 'application/json')
-    //       .expect(403, done);
-    //   });
 
-    //   it('should allow public to POST new user via registration', function(done) {
-    //     request(app)
-    //       .post(apiRoot + '/users')
-    //       .set('Accept', 'application/json')
-    //       .send({
-    //         isActive: false,
-    //         email: 'register@example.com',
-    //         username: 'register'
-    //       })
-    //       .expect(function(res) {
-    //         expect(res.body).to.deep.equal({username: 'register'});
-    //       })
-    //       .expect(201, done);
-    //   });
-    // });
+    // https://weblogs.java.net/blog/felipegaucho/archive/2009/10/02/pedantic-guide-restful-registration-use-case
 
-    // describe('PUT /users', function() {
-    //   it('should allow users to PUT their own info');
 
-    //   it('should not allow users to PUT others info');
-    // });
-
-    // describe('DELETE /users', function() {
-    //   it('should not allow users to DELETE users');
-    // });
 });
+
