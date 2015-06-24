@@ -49,7 +49,9 @@ module.exports = function(app) {
       return 'public';
     },
     contextFilter: function(model, req, cb) {
-      cb(model.find({}, {
+      cb(model.find({
+      }, {
+        _id: false,
         username: true
       }));
     },
@@ -66,8 +68,15 @@ module.exports = function(app) {
         return next();
       }
     ],
+    outputFn: function(req, res, data) {
+        if (data.result !== null && req.method === 'GET') {
+            res.status(data.statusCode || 200).json(data.result);
+        } else {
+            res.status(data.statusCode || 200).end();
+        }
+    },
     prereq: function(req) {
-      // Allow registrations to POST
+      // Allow registrations to POST inactive users
       if (
         _.has(req.body, 'isActive') &&
         !req.body.isActive &&
@@ -76,11 +85,9 @@ module.exports = function(app) {
         return true;
       }
 
-      // Prevent POST, PUT, DELETE
+      // Prevent everything else
       return false;
     },
-    // private: '_id,__v,created,email,isActive,name.first,name.last,password,salt',
-    protected: '_id,__v,created,email,isActive,name.first,name.last,password,salt',
     strict: true
   });
 

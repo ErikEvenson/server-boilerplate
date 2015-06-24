@@ -48,7 +48,7 @@ describe('users', function() {
     db.connection.close(done);
   });
 
-  describe('Users API:', function() {
+  describe('API', function() {
     describe('GET /users', function() {
       it('should not provide public user a list of users', function(done) {
         request(app)
@@ -69,7 +69,6 @@ describe('users', function() {
           .expect(200, done);
       });
     });
-  });
 
     describe('POST /users', function() {
       it('should not allow public to POST new user', function(done) {
@@ -81,19 +80,28 @@ describe('users', function() {
           .expect(403, done);
       });
 
-      it('should allow public to POST new user via registration', function(done) {
+      it('should allow public to POST new inactive user', function(done) {
         request(app)
           .post(apiRoot + '/users')
           .set('Accept', 'application/json')
           .send({
             isActive: false,
             email: 'register@example.com',
+            password: 'password',
             username: 'register'
           })
-          .expect(function(res) {
-            expect(res.body).to.deep.equal({username: 'register'});
-          })
-          .expect(201, done);
+          .expect(201)
+          .end(function(err, res) {
+            expect(res.body).to.deep.equal({});
+
+            User.findOne({username: 'register'}, function(err, user) {
+              expect(user.email).to.be.equal('register@example.com');
+              expect(user.isActive).to.be.equal(false);
+              expect(user.password).to.not.be.a('null');
+              done();
+            });
+          });
+
       });
     });
 
@@ -106,4 +114,5 @@ describe('users', function() {
     describe('DELETE /users', function() {
       it('should not allow users to DELETE users');
     });
+  });
 });
