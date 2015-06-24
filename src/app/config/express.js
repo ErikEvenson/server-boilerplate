@@ -7,10 +7,8 @@ var
   jwt = require('jsonwebtoken'),
   methodOverride = require('method-override'),
   morgan = require('morgan'),
-  passport = require('passport'),
   path = require('path'),
-  secrets = require('./secrets'),
-  session = require('express-session');
+  secrets = require('./secrets')
 
 /**
   * @return {Function} - The express application.
@@ -46,13 +44,6 @@ module.exports = function() {
     app.use(forceSSL);
   }
 
-  // Set up express-session
-  app.use(session({
-    saveUninitialized: true,
-    resave: true,
-    secret: environment.sessionSecret
-  }));
-
   // Set up view engines
   viewPaths = [
     path.join(instancePath, 'app/views')
@@ -63,10 +54,6 @@ module.exports = function() {
 
   // Set up connect-flash
   app.use(flash());
-
-  // Set up passport authentication
-  app.use(passport.initialize());
-  app.use(passport.session());
 
   // Set up routes
   // require(path.join(instancePath, 'app/routes/app'))(app);

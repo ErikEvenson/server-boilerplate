@@ -40,13 +40,6 @@ var UserSchema = new Schema({
   salt: {
     type: String
   },
-  provider: {
-    default: 'local',
-    required: 'Provider is required',
-    type: String
-  },
-  providerData: {},
-  providerId: String,
   registrationToken: {
     sparse: true,
     type: String,

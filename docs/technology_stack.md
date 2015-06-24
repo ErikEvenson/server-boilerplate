@@ -22,7 +22,6 @@ These are the technologies used in this project.
 - [del](https://www.npmjs.com/package/del) 1.2.0
 - [express](https://www.npmjs.com/package/express) 4.12.4 - Fast, unopinionated, minimalist web framework.
 - [express-restify-mongoose]() 1.0.2
-- [express-session](https://www.npmjs.com/package/express-session) 1.11.2 - Simple session middleware for Express
 - [gulp](https://www.npmjs.com/package/gulp) 3.8.11 - The streaming build system
 - [gulp-cached](https://www.npmjs.com/package/gulp-cached) 1.1.0 - A simple in-memory file cache for gulp
 - [gulp-callback](https://www.npmjs.com/package/gulp-callback) 0.0.3 - copied from http://c2journal.com/2014/07/30/gulp-pipe-callback/
@@ -44,8 +43,6 @@ These are the technologies used in this project.
 - [mkdirp](https://www.npmjs.com/package/mkdirp) 0.5.1 - Recursively mkdir, like mkdir -p
 - [mongoose](https://www.npmjs.com/package/mongoose) 4.0.5 - Mongoose MongoDB ODM
 - [morgan](https://www.npmjs.com/package/morgan) 1.5.3 - HTTP request logger middleware for node.js
-- [passport](https://www.npmjs.com/package/passport) 0.2.2 - Simple, unobtrusive authentication for Node.js.
-- [passport-local](https://www.npmjs.com/package/passport-local) 1.0.0 - Local username and password authentication strategy for Passport.
 - [q](https://www.npmjs.com/package/q) 1.4.1 - A library for promises (CommonJS/Promises/A,B,D)
 - [request]() 2.57.0 - 'Simplified HTTP request client.'
 - [should](https://www.npmjs.com/package/should) 6.0.3 - test framework agnostic BDD-style assertions

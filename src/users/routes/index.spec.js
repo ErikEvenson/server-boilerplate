@@ -2,7 +2,6 @@ var
   expect = require('chai').expect,
   express = require('../../app/config/express.js'),
   mongoose = require('../../app/config/mongoose.js'),
-  passport = require('../../app/config/passport'),
   request = require('supertest'),
   should = require('should');
 
