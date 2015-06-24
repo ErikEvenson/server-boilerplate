@@ -44,7 +44,7 @@ describe('auth', function() {
 
     var registrations = [
       {token: 'token', username: 'inactiveUser'}
-    ]
+    ];
 
     async.series(
       [
@@ -103,7 +103,7 @@ describe('auth', function() {
         });
     });    
 
-    it('should authorize active users and provide token', function(done) {
+    it('should authorize active users and provide jwt token', function(done) {
       request(app)
         .post('/authenticate')
         .set('Accept', 'application/json')
@@ -136,7 +136,7 @@ describe('auth', function() {
     });
 
     describe('POST /auth/registrations', function() {
-      it('should allow public to POST to get new token via registration', function(done) {
+      it('should allow public to POST to set a new token via registration', function(done) {
         request(app)
           .post(apiRoot + '/auth/registrations')
           .set('Accept', 'application/json')
@@ -147,11 +147,30 @@ describe('auth', function() {
           .expect(201, done);
       });      
     });
-  });
-
 
     // https://weblogs.java.net/blog/felipegaucho/archive/2009/10/02/pedantic-guide-restful-registration-use-case
+    describe('POST /auth/registrations/:token/activate', function() {
+      it('should allow public to POST to activate account via registration', function(done) {
+        request(app)
+          .post(apiRoot + '/auth/registrations/' + 'token' + '/activate')
+          .set('Accept', 'application/json')
+          .send()
+          .expect(function(res) {
+            expect(res.body).to.deep.equal({token: 'token'});
+          })
+          .expect(200)
+          .end(function(err, res) {
+            User.findOne({username: 'inactiveUser'}, function(err, user) {
+              expect(user.isActive).to.be.equal(true);
 
-
+              Registration.count({username: 'inactiveUser'}, function(err, count) {
+                expect(count).to.be.equal(0);
+                done();
+              });
+            });
+          });
+      });      
+    });
+  });
 });
 

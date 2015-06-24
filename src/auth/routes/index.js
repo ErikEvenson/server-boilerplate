@@ -13,6 +13,9 @@ module.exports = function(app) {
   app.route('/authenticate')
     .post(authController.authenticate);
 
+  app.route('/api/v1/auth/registrations/:token/activate')
+    .post(authController.activate);
+
   // API routes
   restify.serve(apiRoutes, mongoose.model('Registration'), {
     access: function(req) {

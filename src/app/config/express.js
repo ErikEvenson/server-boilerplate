@@ -8,7 +8,7 @@ var
   methodOverride = require('method-override'),
   morgan = require('morgan'),
   path = require('path'),
-  secrets = require('./secrets')
+  secrets = require('./secrets');
 
 /**
   * @return {Function} - The express application.

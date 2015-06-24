@@ -21,7 +21,11 @@ var RegistrationSchema = new Schema({
 
 RegistrationSchema.pre('save', function(next) {
   // Email in here?
-  if (!this.token) this.token = uuid.v4();
+  if (!this.token) {
+    this.token = uuid.v4();
+    console.log("TOKEN: ", this.token);
+  }
+
   next();
 });
 
