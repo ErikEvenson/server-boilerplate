@@ -14,7 +14,7 @@ var e2eCommand = 'xvfb-run protractor test/e2e/protractor.conf.js';
 // Run everything serially
 gulp.task('test', shell.task([
   'gulp lint:jshint',
-  'gulp lint:gjslint',
+  // 'gulp lint:gjslint',
   'gulp test:gulp',
   'gulp test:unit',
   e2eCommand
