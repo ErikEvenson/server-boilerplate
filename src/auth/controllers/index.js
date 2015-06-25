@@ -9,19 +9,18 @@ exports.activate = function(req, res, next) {
   Registration.findOne({token: token}, function(err, registration) {
     if (err) return next(err);
 
-    User.findOneByUsername(registration.username, function(err, user) {
-      if (err) return next(err);
-      user.isActive = true;
-
-      user.save(function(err) {
+    User.findOneAndUpdate(
+      {username: registration.username},
+      {isActive: true},
+      function(err) {
         if (err) return next(err);
 
         registration.remove(function(err) {
           if (err) return next(err);
           return res.status(200).send({token: token});
         });
-      });
-    });
+      }
+    );
   });
 };
 

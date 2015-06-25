@@ -162,6 +162,7 @@ describe('auth', function() {
           .end(function(err, res) {
             User.findOne({username: 'inactiveUser'}, function(err, user) {
               expect(user.isActive).to.be.equal(true);
+              expect(user.hashPassword('inactivePassword')).to.be.equal(user.password);
 
               Registration.count({username: 'inactiveUser'}, function(err, count) {
                 expect(count).to.be.equal(0);

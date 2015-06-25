@@ -70,7 +70,7 @@ UserSchema.methods.hashPassword = function(password) {
 };
 
 UserSchema.methods.authenticate = function(password) {
-  return (this.password === this.hashPassword(password) && this.isActive);
+  return ((this.password === this.hashPassword(password)) && (this.isActive));
 };
 
 UserSchema.set('toJSON', {
