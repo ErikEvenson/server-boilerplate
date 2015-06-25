@@ -18,7 +18,8 @@
     "lodash": "3.9.3",
     "method-override": "2.3.3",
     "mongoose": "4.0.5",
-    "morgan": "1.5.3"
+    "morgan": "1.5.3",
+    "uuid": "2.0.1"
   },
   "engines": {
     "node": "0.12.2"
@@ -58,7 +59,6 @@
     "should": "6.0.3",
     "sinon": "1.15.3",
     "supertest": "1.0.1",
-    "uuid": "2.0.1",
     "yargs": "3.9.1",
     "yeoman-assert": "2.0.0"
   }
