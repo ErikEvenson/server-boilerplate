@@ -46,7 +46,8 @@ module.exports = function() {
 
   // Set up view engines
   viewPaths = [
-    path.join(instancePath, 'app/views')
+    path.join(instancePath, 'app/views'),
+    path.join(instancePath, 'auth/views')
   ];
 
   app.set('views', viewPaths);
@@ -67,6 +68,9 @@ module.exports = function() {
   // app.get('*', function(req, res) {
   //   res.redirect('/public');
   // });
+
+  // Mailer
+  require('./mailer')(app);
 
   return app;
 };

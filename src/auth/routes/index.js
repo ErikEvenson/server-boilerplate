@@ -7,6 +7,7 @@ var
 
 var authRoutes = express.Router();
 var apiRoutes = express.Router();
+var User = mongoose.model('User');
 
 module.exports = function(app) {
   // authRoutes.use(function(req, res, next) {
@@ -73,6 +74,34 @@ module.exports = function(app) {
       }
     ],
     name: 'auth/registrations',
+    postCreate: function(res, result, done) {
+      if (result.username) {
+        User.findOne({username: result.username}, function(err, user) {
+          if (err) done(err);
+
+          if (user && user.email) {
+            app.mailer.send(
+              'auth.registration.jade',
+              {
+                to: user.email,
+                subject: 'Registration on ...',
+                otherProperty: 'other property'
+              },
+              function(err) {
+                if (err) {
+                  console.log(err);
+                  return done(err);
+                }
+                
+                return done();
+              }
+            );            
+          } else {
+            return done();
+          }
+        });
+      }
+    },
     prereq: function(req) {
       return true;
     },
