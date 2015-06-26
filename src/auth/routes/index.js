@@ -18,7 +18,7 @@ module.exports = function(app) {
   //   if (token) {
   //     jwt.verify(
   //       token,
-  //       req.app.get('secrets').tokenSecret,
+  //       req.app.get('configVars').TOKEN_SECRET,
   //       function(err, decoded) {
   //         if (err) {
   //           return res.status(403).json({

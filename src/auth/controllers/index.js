@@ -40,7 +40,7 @@ exports.authenticate = function(req, res, next) {
           message: 'Authentication failed.'
         });
       } else {
-        var token = jwt.sign(user, req.app.get('secrets').tokenSecret, {
+        var token = jwt.sign(user, req.app.get('configVars').TOKEN_SECRET, {
           expiresInMinutes: 1440 // 24 hours
         });
 

@@ -177,8 +177,16 @@ var herokuTarball = function(options, done) {
   var instance = options.instance || 'development';
   var tarballName = options.tarballName || instance;
   var tarballPath = path.join(config.temp, tarballName + '.tar.gz');
-  var files = path.join(config.instances, instance, '**/*');
+  
+  // Make sure we are sending a app.json file
   yassert.file(path.join(config.instances, instance, 'app.json'));
+
+  var files = [
+    path.join(config.instances, instance, '**/*'),
+
+    // Don't send secrets
+    '!' + path.join(config.instances, instance, '**/secrets{/**,*}')
+  ];
 
   async.waterfall([
     function(cb) {

@@ -5,8 +5,8 @@ var
 module.exports = function(app) {
   var mailerOptions = {
     auth: {
-      user: secrets.emailUsername,
-      pass: secrets.emailPassword
+      user: app.get('configVars').EMAIL_USERNAME,
+      pass: app.get('configVars').EMAIL_PASSWORD
     },
     from: 'noreply@3eenterprises.com',
     host: 'vps2.erikevenson.net',

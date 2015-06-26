@@ -7,8 +7,7 @@ var
   jwt = require('jsonwebtoken'),
   methodOverride = require('method-override'),
   morgan = require('morgan'),
-  path = require('path'),
-  secrets = require('./secrets');
+  path = require('path');
 
 /**
   * @return {Function} - The express application.
@@ -20,11 +19,17 @@ module.exports = function() {
   var forceSSL = require('./ssl').force(environment.hostname);
 
   app.set('environment', environment);
-  app.set('secrets', secrets);
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+    app.set('configVars', require('./secrets').configVars.development);
     app.use(morgan('dev'));
   } else if (process.env.NODE_ENV === 'production') {
+    app.set('configVars', {
+      EMAIL_USERNAME: process.env.EMAIL_USERNAME,
+      EMAIL_PASSWORD: process.env.EMAIL_PASSWORD,
+      TOKEN_SECRET: process.env.TOKEN_SECRET
+    });
+
     app.use(compression({
       threshold: 1024
     }));
