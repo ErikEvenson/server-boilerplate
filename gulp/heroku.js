@@ -31,10 +31,30 @@ var herokuAppsConfigVarsInfo = function(options, cb) {
   });
 };
 
-var herokuAppsList = function(done) {
+var herokuAppsConfigVarsUpdate = function(options, cb) {
+  if (!options.app) return cb(new Error('no app provided.'));
+  if (!options.attributes) return cb(new Error('no attributes provided.'));
+
+  heroku.apps(options.app).configVars()
+    .update(options.attributes, function(err, configVars) {
+      if (err) return cb(err);
+      return cb(null, configVars);
+    });
+};
+
+var herokuAppsList = function(cb) {
   heroku.apps().list(function(err, apps) {
-    if (err) return done(err);
-    return done(null, apps);
+    if (err) return cb(err);
+    return cb(null, apps);
+  });
+};
+
+var herokuAppsInfo = function(options, cb) {
+  if (!options.app) return cb(new Error('no app provided.'));
+
+  heroku.apps(options.app).info(function(err, info) {
+    if (err) return cb(err);
+    return cb(null, info);
   });
 };
 
@@ -179,6 +199,7 @@ var herokuTarball = function(options, done) {
 
 var lib = {
   herokuAppsConfigVarsInfo: herokuAppsConfigVarsInfo,
+  herokuAppsInfo: herokuAppsInfo,
   herokuAppsList: herokuAppsList,
   herokuPutFile: herokuPutFile,
   herokuSetup: herokuSetup,
@@ -186,6 +207,22 @@ var lib = {
 };
 
 module.exports = lib;
+
+gulp.task('heroku:apps:configVars:update', function(done) {
+  var app = argv.app || null;
+  if (!app) return done(new Error('An app is required.'));
+  var configVars = require('../src/app/config/secrets').configVars[app];
+
+  var options = {
+    app: app,
+    attributes: configVars
+  };
+
+  herokuAppsConfigVarsUpdate(options, function(err, configVars) {
+    if (err) return gutil.log(err);
+    gutil.log(configVars);
+  });
+});
 
 gulp.task('heroku:apps:configVars:info', function(done) {
   var options = {
@@ -198,14 +235,26 @@ gulp.task('heroku:apps:configVars:info', function(done) {
   });
 });
 
-gulp.task('heroku:apps:list', function(done) {
-  herokuAppsList(function(err, apps) {
-    if (err) return gutil.log(err);
-    gutil.log(apps);
+gulp.task('heroku:apps:info', function(done) {
+  var options = {
+    app: argv.app || null
+  };
+
+  herokuAppsInfo(options, function(err, info) {
+    if (err) return done(err);
+    gutil.log(info);
+    return done();
   });
 });
 
-// heroku:deploy is used to deploy an existing heroku app
+gulp.task('heroku:apps:list', function(done) {
+  herokuAppsList(function(err, apps) {
+    if (err) return done(err);
+    gutil.log(apps);
+    return done()
+  });
+});
+
 gulp.task('heroku:deploy', function(done) {
   var options = {
     app: argv.app || null,
@@ -213,14 +262,22 @@ gulp.task('heroku:deploy', function(done) {
   };
 
   async.waterfall([
+    // Check if app exists
     function(cb) {
       if (!options.app) return cb(null, false);
 
       herokuAppsList(function(err, apps) {
+        var appsList = [];
+
+        apps.forEach(function(app) {
+          appsList.push(app.name);
+        });
+
         if (err) return cb(err);
-        return cb(null, _.contains(apps, options.app));
+        return cb(null, _.contains(appsList, options.app));
       });
     },
+    // Deploy if app exists, setup if new
     function(appExists, cb) {
       if (appExists) {
         // deploy source
@@ -230,12 +287,22 @@ gulp.task('heroku:deploy', function(done) {
       } else {
         // Setup app
         herokuSetup(options, function(err, response) {
+          options.app = response.app.name;
           cb(err, response);
         });
       }
+    },
+    // Update config vars in case something has changed
+    function(response, cb) {
+      options.attributes = require('../src/app/config/secrets')
+        .configVars[options.app];
+
+      herokuAppsConfigVarsUpdate(options, function(err, configVars) {
+        cb(err, configVars);
+      });
     }
   ], function(err, result) {
-    gutil.log(result);
+    gutil.log(options.app + ' deployed.');
     done();
   });
 });
