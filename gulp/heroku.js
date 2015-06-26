@@ -22,16 +22,19 @@ var
 var keys = require(path.join(config.secrets, 'keys'));
 var heroku = new Heroku({token: keys.HEROKU_API_TOKEN});
 
+var herokuAppsConfigVarsInfo = function(options, cb) {
+  if (!options.app) return cb(new Error('no app provided.'));
+
+  heroku.apps(options.app).configVars().info(function(err, configVars) {
+    if (err) return cb(err);
+    return cb(null, configVars);
+  });
+};
+
 var herokuAppsList = function(done) {
   heroku.apps().list(function(err, apps) {
     if (err) return done(err);
-    var appsList = [];
-
-    apps.forEach(function(app) {
-      appsList.push(app.name);
-    });
-
-    return done(null, appsList);
+    return done(null, apps);
   });
 };
 
@@ -175,6 +178,7 @@ var herokuTarball = function(options, done) {
 };
 
 var lib = {
+  herokuAppsConfigVarsInfo: herokuAppsConfigVarsInfo,
   herokuAppsList: herokuAppsList,
   herokuPutFile: herokuPutFile,
   herokuSetup: herokuSetup,
@@ -183,10 +187,25 @@ var lib = {
 
 module.exports = lib;
 
-gulp.task('heroku:apps:list', function(done) {
-  herokuAppsList(done);
+gulp.task('heroku:apps:configVars:info', function(done) {
+  var options = {
+    app: argv.app || null
+  };
+
+  herokuAppsConfigVarsInfo(options, function(err, configVars) {
+    if (err) return gutil.log(err);
+    gutil.log(configVars);
+  });
 });
 
+gulp.task('heroku:apps:list', function(done) {
+  herokuAppsList(function(err, apps) {
+    if (err) return gutil.log(err);
+    gutil.log(apps);
+  });
+});
+
+// heroku:deploy is used to deploy an existing heroku app
 gulp.task('heroku:deploy', function(done) {
   var options = {
     app: argv.app || null,
@@ -221,6 +240,7 @@ gulp.task('heroku:deploy', function(done) {
   });
 });
 
+// heroku:setup is used to deploy a heroku app for the first time
 gulp.task('heroku:setup', function(done) {
   var options = {
     app: argv.app || null,
