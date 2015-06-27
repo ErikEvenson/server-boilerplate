@@ -1,6 +1,5 @@
 var
-  mailer = require('express-mailer'),
-  secrets = require('./secrets');
+  mailer = require('express-mailer');
 
 module.exports = function(app) {
   var mailerOptions = {
