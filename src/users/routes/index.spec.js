@@ -54,7 +54,7 @@ describe('users', function() {
         request(app)
           .get(apiRoot + '/users')
           .set('Accept', 'application/json')
-          .expect(403, done);
+          .expect(401, done);
       });
     });
 
@@ -77,7 +77,7 @@ describe('users', function() {
           .set('Accept', 'application/json')
           .send({username: 'newusers'})
           .set('Accept', 'application/json')
-          .expect(403, done);
+          .expect(401, done);
       });
 
       it('should allow public to POST new inactive user', function(done) {

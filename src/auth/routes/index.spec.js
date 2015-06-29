@@ -122,7 +122,7 @@ describe('auth', function() {
         request(app)
           .get(apiRoot + '/users')
           .set('Accept', 'application/json')
-          .expect(403, done);
+          .expect(401, done);
       });
     });
 
@@ -142,7 +142,7 @@ describe('auth', function() {
           .set('Accept', 'application/json')
           .send({username: 'register'})
           .expect(function(res) {
-            expect(res.body).to.deep.equal({username: 'register'});
+            expect(res.body).to.deep.equal({});
           })
           .expect(201, done);
       });      

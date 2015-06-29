@@ -15,6 +15,7 @@ function requiredProcessEnv(name) {
 var all = {
   apiPrefix: '/api',
   apiVersion: '/v1',
+  brand: 'Boilerplate',
   env: process.env.NODE_ENV,
   instancePath: path.join(__dirname, '../../..')
 };
