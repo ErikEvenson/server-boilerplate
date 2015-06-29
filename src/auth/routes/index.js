@@ -25,14 +25,14 @@ module.exports = function(app) {
     // Exceptions
     // Allow unauth new inactive user POST
     if (
-      req.method === 'POST' 
-      && req.path === endpoint 
+      req.method === 'POST' &&
+      req.path === endpoint 
     ) return next();
 
     // All GETting of single registration but not list
     if (
-      req.method === 'GET'
-      && req.path !== endpoint
+      req.method === 'GET' &&
+      req.path !== endpoint
     ) return next();
 
     // Normal routes
@@ -62,7 +62,7 @@ module.exports = function(app) {
         message: 'No token provided.'
       });
     }
-  }
+  };
 
   var registerUser = function(result, done) {
     if (result.username) {
@@ -77,7 +77,7 @@ module.exports = function(app) {
             subject: 'Registration on ' + brand,
             path: endpoint +'/' + result.token,
             username: result.username
-          }
+          };
 
           if (hostname === 'localhost') {
             options.protocol = 'http';

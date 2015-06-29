@@ -12,16 +12,16 @@ var apiAuth = function(req, res, next) {
   // Exceptions
   // Allow unauth new inactive user POST
   if (
-    req.method === 'POST' 
-    && req.path === '/api/v1/users' 
-    && _.has(req.body, 'isActive') 
-    && !req.body.isActive
+    req.method === 'POST' &&
+    req.path === '/api/v1/users' &&
+    _.has(req.body, 'isActive') &&
+    !req.body.isActive
   ) return next();
 
   // All GETting of single user (ex for remote validation) but not list
   if (
-    req.method === 'GET'
-    && req.path !== '/api/v1/users'
+    req.method === 'GET' &&
+    req.path !== '/api/v1/users'
   ) return next();
 
   // Normal routes
@@ -51,7 +51,7 @@ var apiAuth = function(req, res, next) {
       message: 'No token provided.'
     });
   }
-}
+};
 
 module.exports = function(app) {
   // API routes

@@ -259,7 +259,7 @@ gulp.task('heroku:apps:list', function(done) {
   herokuAppsList(function(err, apps) {
     if (err) return done(err);
     gutil.log(apps);
-    return done()
+    return done();
   });
 });
 
