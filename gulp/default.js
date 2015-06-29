@@ -5,7 +5,7 @@ var
   gutil = require('gulp-util'),
   server = require('./server');
 
-gulp.task('default', function() {
+gulp.task('default', ['build:install'], function() {
   var options = {
     clean: argv.clean || false,
     instance: argv.instance || 'development',

@@ -4,13 +4,12 @@ A server boilerplate.  See the `technology_stack.md` document to find out what v
 
 ## Running Locally
 
-Make sure you have [Node.js](http://nodejs.org/), [bower](http://bower.io), and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.  A working vagrant devbox that supports this app is avaiable at [https://github.com/ErikEvenson/devbox](https://github.com/ErikEvenson/devbox).
+Make sure you have [Node.js](http://nodejs.org/), and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.  A working vagrant devbox that supports this app is avaiable at [https://github.com/ErikEvenson/devbox](https://github.com/ErikEvenson/devbox).
 
 ```sh
 $ git clone git@github.com:ErikEvenson/server-boilerplate.git # or clone your own fork
 $ cd server-boilerplate
 $ npm install
-$ bower install
 $ npm start
 ```
 

@@ -29,6 +29,7 @@ These are the technologies used in this project.
 - [gulp-develop-server](https://www.npmjs.com/package/gulp-develop-server) 0.4.3 - run node.js server and automatically restart for your development
 - [gulp-gjslint](https://www.npmjs.com/package/gulp-gjslint) 0.1.4 - Gulp task for running gjslint, the Google Closure linter
 - [gulp-gzip](https://www.npmjs.com/package/gulp-gzip) 1.1.0 - Gzip plugin for gulp
+- [gulp-install](https://www.npmjs.com/package/gulp-install) 0.4.0 - Automatically install npm and bower packages if package.json or bower.json is found in the gulp file stream respectively
 - [gulp-jshint](https://www.npmjs.com/package/gulp-jshint) 1.11.0 - JSHint plugin for gulp
 - [gulp-mocha](https://www.npmjs.com/package/gulp-mocha) 2.1.0 - Run Mocha tests
 - [gulp-newer](https://www.npmjs.com/package/gulp-newer) 0.5.0 - Only pass through newer source files

@@ -5,6 +5,7 @@ var
   config = require('../config'),
   del = require('del'),
   gulp = require('gulp'),
+  install = require('gulp-install'),
   newer = require('gulp-newer'),
   path = require('path');
 
@@ -55,7 +56,12 @@ var lib = {
 
 module.exports = lib;
 
-gulp.task('build', function(done) {
+gulp.task('build:install', function() {
+  gulp.src(['./package.json'])
+    .pipe(install());
+});
+
+gulp.task('build', ['build:install'], function(done) {
   var options = {
     clean: argv.clean || false,
     instance: argv.instance || 'development',
