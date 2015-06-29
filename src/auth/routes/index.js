@@ -75,7 +75,7 @@ module.exports = function(app) {
             hostname: hostname,
             to: user.email,
             subject: 'Registration on ' + brand,
-            path: endpoint +'/' + result.token,
+            path: '/#!/auth/registrationActivation/' + result.token,
             username: result.username
           };
 

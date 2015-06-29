@@ -4,17 +4,17 @@ html
     title= subject
     
     body
-      h1 subject
+      h1= subject
 
-      p Someone, probably you, registered for an account at VBEnergyZone under
-      | the username #{username}.  To activate your account, please click
-      | on this link:
+      p Someone, probably you, registered for an account at #{brand} under
+        | the username #{username}.  To activate your account, please click
+        | on this link:
 
       if port
-        p #{protocol}://#{hostname}:#{port}#{path}
-        p #{protocol}://192.168.50.4:#{port}#{path}
+        a(href="#{protocol}://#{hostname}:#{port}#{path}") Registration link
+        a(href="#{protocol}://192.168.50.4:#{port}#{path}") Registration link
       else
-        p #{protocol}://#{hostname}#{path}
+        a(href="#{protocol}://#{hostname}#{path}") Registration link
 
       P Thanks!
 
